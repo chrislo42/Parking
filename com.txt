@@ -172,4 +172,13 @@ la route proprietaire pour les utilisateurs d'un groupe spécial
 				return False
 	CarViewSet avec permission_classes = IsStaffOrReadOnlyForAuthenticated
 
+Ajout de DjangoFilterBackend. Déjà installer par pip.
+	ajout dans settings INSTALLED_APPS
+	ajout dans la vue ParkViewSet de :
+		from django_filters.rest_framework import DjangoFilterBackend
+
+		filter_backends = (DjangoFilterBackend,)
+		filter_fields = ('etage', 'numero')
+On voit maintenant un bouton de filtre pour Parklist
+
 

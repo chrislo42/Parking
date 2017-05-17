@@ -1,6 +1,7 @@
 from rest_framework import viewsets, permissions
 from api.serializer import *
 from api.permissions import *
+from django_filters.rest_framework import DjangoFilterBackend
 
 # Create your views here.
 
@@ -10,6 +11,8 @@ class ParkViewSet(viewsets.ModelViewSet):
     queryset = Parking.objects.all()
     serializer_class = ParkSerializer
     permission_classes = (IsStaffOrReadOnly,)
+    filter_backends = (DjangoFilterBackend,)
+    filter_fields = ('etage', 'numero')
 
 
 class CarViewSet(viewsets.ModelViewSet):
