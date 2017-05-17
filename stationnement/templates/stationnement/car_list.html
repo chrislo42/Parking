@@ -1,0 +1,49 @@
+{% extends 'stationnement/base.html' %}
+
+{% block content %}
+    <div class="row legende">
+        <div class="col-xs-2">
+            Marque
+        </div>
+        <div class="col-xs-2">
+            Couleur
+        </div>
+        <div class="col-xs-3">
+            Immat
+        </div>
+        <div class="col-xs-2">
+             Propriétaire
+        </div>
+        <div class="col-xs-3">
+            Parking
+        </div>
+    </div>
+    {% for car in cars %}
+        <div class="row car">
+            <div class="col-xs-2 col-md-2">
+                {{ car.marque }}
+            </div>
+            <div class="col-xs-2 col-md-2">
+                {{ car.couleur }}
+            </div>
+            <div class="col-xs-3 col-md-3">
+                {{ car.immat }}
+            </div>
+            <div class="col-xs-2 col-md-2">
+                 {{ car.proprietaire }}
+            </div>
+            <div class="col-xs-3 col-md-3">
+                {% for park in parks %}
+                    {% if park.voiture.immat == car.immat %}
+                        etage : {{ park.etage }} numéro : {{ park.numero }}
+                    {% else %}
+                    {% endif %}
+                {% empty %}
+                    pas de liste
+                {% endfor %}
+            </div>
+        </div>
+    {% empty %}
+        <li>Il n'y en a pas actuellement.</li>
+    {% endfor %}
+{% endblock content %}

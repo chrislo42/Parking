@@ -1,0 +1,42 @@
+{% extends 'stationnement/base.html' %}
+
+{% block content %}
+    <div class="row legende">
+        <div class="col-xs-1 col-md-1">
+            Etage
+        </div>
+        <div class="col-xs-1 col-md-1">
+            Numéro
+        </div>
+        <div class="col-xs-1 col-md-1 col-md-offset-1">
+            Couvert
+        </div>
+        <div class="col-xs-3 col-md-3 col-md-offset-1">
+             Voiture
+        </div>
+        <div class="col-xs-4 col-md-4">
+            Date
+        </div>
+    </div>
+    {% for park in parks %}
+        <div class="row park">
+            <div class="col-xs-1 col-md-1">
+                {{ park.etage }}
+            </div>
+            <div class="col-xs-1 col-md-1">
+                {{ park.numero }}
+            </div>
+            <div class="col-xs-1 col-md-1 col-md-offset-1">
+                {{ park.couvert }}
+            </div>
+            <div class="col-xs-3 col-md-3 col-md-offset-1">
+                 {{ park.voiture }}
+            </div>
+            <div class="col-xs-4 col-md-4">
+                {{ park.date_affect }}
+            </div>
+        </div>
+    {% empty %}
+        <li>Il n'y en a pas actuellement.</li>
+    {% endfor %}
+{% endblock content %}
