@@ -25,6 +25,8 @@ router = routers.DefaultRouter()
 router.register(r'parking', views.ParkViewSet, base_name='parking')
 router.register(r'voiture', views.CarViewSet, base_name='voiture')
 router.register(r'proprietaire', views.OwnerViewSet, base_name='proprietaire')
+router.register(r'users', views.UserViewSet)
+router.register(r'groups', views.GroupViewSet)
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),

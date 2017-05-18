@@ -174,11 +174,33 @@ la route proprietaire pour les utilisateurs d'un groupe spécial
 
 Ajout de DjangoFilterBackend. Déjà installer par pip.
 	ajout dans settings INSTALLED_APPS
+Les filtres :
 	ajout dans la vue ParkViewSet de :
 		from django_filters.rest_framework import DjangoFilterBackend
 
 		filter_backends = (DjangoFilterBackend,)
 		filter_fields = ('etage', 'numero')
 On voit maintenant un bouton de filtre pour Parklist
+idem pour voiture filtre sur marque.
+Le search :
+	ajout de l'import filters de rest_framework
+	ajout de filters.SearchFilter dans filter_backends
+	ajout de search_fields avec les champs authorisés
+Le tri :
+	ajout de filters.OrderingFilter dans filter_backends (l'import de filters est déjà fait)
+	ajout de ordering_fields avec les champs authorisés
+
+Ajout de plusieurs entrées dans voiture pour dépasser 10.
+	la pagination se mets en route automatiquement en fonction de PAGE_SIZE dans settings.
+	avec LimitOffsetPagination, on a un offset et une limite, PAGE_SIZE fixe la limite
+	avec PageNumberPagination, on a des pages de PAGE_SIZE
+
+DEFAULT_RENDERER_CLASSES dans REST_FRAMEWORK de settings
+	mettre d'abord la réponse souhaitée si la requête ne contient pas de "accept" dans le header
+	dans la plupart des cas , rest_framework.renderers.JSONRenderer. la réponse sera dans le format Json
+	rest_framework.renderers.BrowsableAPIRenderer permet de pouvoir accéder à l'interface wed de l'api.
+
+
+
 
 
