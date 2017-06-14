@@ -25,8 +25,8 @@ SECRET_KEY = '!q=ag_e#pl!nl@4!g(qkm(f9h9(*5%v^py2&fxo!gkw7thd04p'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['127.0.0.1', '.192.168.0.150', '.localhost', 'parking.fr']
+INTERNAL_IPS = ['127.0.0.1']
 
 # Application definition
 
@@ -109,12 +109,18 @@ REST_FRAMEWORK = {
             'rest_framework.renderers.BrowsableAPIRenderer',
         ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         ),
     'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticatedOrReadOnly', ),
     'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend', ),
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 10
+}
+
+SWAGGER_SETTINGS = {
+    'VALIDATOR_URL': None,
+    'SHOW_REQUEST_HEADERS': True
 }
 
 # Internationalization

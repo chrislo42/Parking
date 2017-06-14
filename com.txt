@@ -200,6 +200,96 @@ DEFAULT_RENDERER_CLASSES dans REST_FRAMEWORK de settings
 	dans la plupart des cas , rest_framework.renderers.JSONRenderer. la réponse sera dans le format Json
 	rest_framework.renderers.BrowsableAPIRenderer permet de pouvoir accéder à l'interface wed de l'api.
 
+Pour faire marcher les autorisations avec un groupe spécial créé avec l'admin.
+	On récupére la liste des groupes auquel appartiens le demandeur:
+	list = request.user.groups.values_list('name', flat=True)
+	Il n'y a plus qu'a tester si le groupe est dans la liste.
+
+Ajout dans REST_FRAMEWORK de settings de :
+'rest_framework.authentication.BasicAuthentication',
+Et essai avec curl d'accès à l'api :
+	curl -H 'Accept: application/json; indent=4' -u chris:foui11a$ -L http://127.0.0.1:8000/api/voiture -v
+	-L pour la redirection des routes
+	-v pour verbose
+
+Modification du template base.html dans myvenv/lib/python3.5/site-packages/rest_framework/templates/rest_framework
+	changement du title dans HEAD et du titre bandeau avec lien sur l'application
+
+********************
+DEPLOIEMENT DJANGO
+********************
+
+Déploiement de l'appli avec apache2 :
+Modification du fichier settings de l'appli.
+	Variable DEBUG à false.
+	Variable ALLOWED_HOSTS avec 127.0.0.1
+	Modification de la base de données
+	Generation d'une nouvelle SECRET_KEY
+Installation du module apache nécessaire.
+	# aptitude install libapache2-mod-wsgi
+Modification du fichier de config apache.
+	WSGIScriptAlias /parking /home/chris/Projets_Django/Parking/parking/wsgi.py
+	WSGIPythonHome /home/chris/Projets_Django/Parking/myvenv
+	WSGIPythonPath /home/chris/Projets_Django/Parking
+	<Directory /home/chris/Projets_Django/Parking/parking/>
+	   <Files wsgi.py>
+		   Require all granted
+	   </Files>
+	</Directory>
+Relance du serveur apache.
+	service apache2 reload
+Essai => réponse FORBIDDEN pas de permissions d'accès
+Ajout de INTERNAL_IPS = ['127.0.0.1'] et de '.localhost' et '.192.168.0.150' dans ALLOWED_HOSTS
+même résultat
+
+Le module installé (libapache2-mod-wsgi) marche avec python 2 !!!
+	sudo apt-get remove libapache2-mod-wsgi
+	sudo apt-get install libapache2-mod-wsgi-py3
+
+Il faut donner les droits d'accès aux dossiers de l'appli à apache2
+	chgrp -R www-data Parking
+	chmod -R 777 Parking
+
+Erreur serveur 500
+Avec la variable DEBUG à False, on ne peut rien voir => retour à True
+En fait, il faut être loggé pour que l'aplli marche à cause du code "commenté" dans le template base.
+	suppression de la partie commentée (les commentaires n'agissent que sur le code html, les balises Django restent actives).
+
+Création d'un fichier parking.conf dans site-available pour ne pas polluer apache2.conf.
+	validation du site :
+	a2ensite parking
+
+Les fichiers css ne sont pas détectés. Il faut ajouter un alias pour le fichiers statiques et autoriser l'accès au dossier.
+	Alias /static/ /home/chris/Projets_Django/Parking/stationnement/static/
+	<Directory /home/chris/Projets_Django/Parking/stationnement/static/>
+   		Require all granted
+	</Directory>
+Par contre, reste le problème de l'api et de swagger.
+Une solution est de copier tous les fichiers statiques de rest_framework dans static de stationnement.
+Idem pour Swagger.
+Autre solution, définir un autre alias avec autorisation d'accès tel que :
+	Alias /static/rest_framework/ /home/chris/Projets_Django/Parking/myvenv/lib/python3.5/site-packages/rest_framework/static/rest_framework/
+	<Directory /home/chris/Projets_Django/Parking/myvenv/lib/python3.5/site-packages/rest_framework/static/>
+   		Require all granted
+	</Directory>
+
+Autre problème, les démos de Swagger ne marche plus, l'url n'inclus pas 'parking'.
+
+Passage en mode daemon de la config apache2. Voir fichier /etc/apache2/sites-availables/parking_d.conf
+De plus, on utilise un virtualhost : il faut le déclarer dans le fichier hosts de /etc.
+L'url de test est maintenant parking.fr
+Un logo d'erreur est affiché avec swagger.
+J'ai ajouté dans settings :
+	SWAGGER_SETTINGS = {
+		'VALIDATOR_URL': None,
+		'SHOW_REQUEST_HEADERS': True
+	}
+
+LA BONNE façon pour les fichiers statiques :
+	faire une commande collectstatic dans une console manage.py@parking
+tous les fichiers statiques nécessaires à l'appli seront copiés dans un dossier static.
+A partir de là, un seul alias suffit mais le chemin est plus court:
+	le dossier static est créé dans le projet !!
 
 
 
